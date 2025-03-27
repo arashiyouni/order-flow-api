@@ -8,8 +8,7 @@ services:
     ports:
       - 27017:27017
     environment:
-      MONGO_INITDB_ROOT_USERNAME: angie
-      MONGO_INITDB_ROOT_PASSWORD: Interview123!
       MONGODB_DATABASE: boxful
     volumes:
       - ./db/orders:/data/db
+      - ./db/init-scripts:/docker-entrypoint-initdb.d
