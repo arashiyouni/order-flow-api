@@ -1,14 +1,11 @@
-version: '4'
-
+version: '3.7'
 services:
-  mongo-card-creator:
-    image: mongo:5
-    container_name: technical_interview_angie
-    restart: always
+  mongodb_container:
+    # This image automatically creates a replica set required for transactions
+    image: prismagraphql/mongo-single-replica:4.4.3-bionic
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: prisma
+      INIT_WAIT_SEC: 3
     ports:
       - 27017:27017
-    environment:
-      MONGODB_DATABASE: boxful
-    volumes:
-      - ./db/orders:/data/db
-      - ./db/init-scripts:/docker-entrypoint-initdb.d
