@@ -1,21 +1,23 @@
-
-
-## Installation
+## 📦 Instalación de dependencias
 
 ```bash
 $ npm install
 ```
 
-## Running the app
-
-```bash
-
-$ npm run start:dev
+### 🐋Inicialiar Docker
 
 ```
-### Connection
+docker compose up -d
+```
+
+### 🌱 Correr creacion de seed
+
+```
+npm run setup
+```
+
+### 🔌 Enlace de conección de mongo
 
 ```bash
-mongosh "mongodb://angie_app:123456@localhost:27017/boxful"
-
+mongodb://localhost:27017/prisma-mongo?authSource=admin&retryWrites=true&w=majority
 ```
