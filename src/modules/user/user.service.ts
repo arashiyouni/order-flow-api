@@ -1,34 +1,24 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { CreateUserDto, UserDto } from './dto/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
-import { SearchUserResponse, UserResponse } from './dto/response/user-response.dto';
+import {  InformationUserResponse, SearchUserResponse, UserResponse } from './dto/response/user-response.dto';
+import { RepositoryService } from './repository/repository.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private userRepository: RepositoryService) { }
 
   async create(createUserDto: CreateUserDto): Promise<UserResponse> {
     const { username, email, password } = createUserDto
 
-    const user = await this.prisma.user.findUnique({
-      where: {
-        email: email
-      },
-    })
+    const user = await this.userRepository.findUser(email)
 
     if (user) throw new BadRequestException(`El usuario ya tiene un correo registrado`)
 
     const hasPass = await bcrypt.hash(password, 10)
 
-    const createUser = await this.prisma.user.create({
-      data: {
-        email: email,
-        username: username,
-        password: hasPass
-      }
-    })
+    const createUser = await this.userRepository.createUser(createUserDto, hasPass)
 
     if (!createUser) throw new BadRequestException(`Ha ocurrido un error al crear su usuario`)
 
@@ -37,25 +27,24 @@ export class UserService {
     }
   }
 
-  async signIn(userData: UserDto) {
-    const { email, password } = userData
+  async findOne(email: string): Promise<SearchUserResponse> {
+    const user = await this.userRepository.findUser(email)
 
-    const user = await this.findEmail(email)
-    const isMatch = await bcrypt.compare(password, user.password);
+    if (user) throw new BadRequestException(`El correo ya esta registrado`)
 
-    if (!isMatch) {
-      throw new UnauthorizedException();
-    }
-    return {
-      username: user.username
-    }
+    return user
   }
 
-  async findEmail(email: string): Promise<SearchUserResponse> {
-    return await this.prisma.user.findUnique({
-      where: {
-        email: email
-      },
-    })
+  async findUsername(username: string): Promise<InformationUserResponse> {
+    const user = await this.userRepository.findUsername(username)
+
+    if (user) throw new BadRequestException(`El usuario ya esta registrado`)
+
+    return {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      role: user.role
+    }
   }
 }

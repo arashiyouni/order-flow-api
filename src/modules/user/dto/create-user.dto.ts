@@ -13,11 +13,3 @@ export class CreateUserDto {
     password: string;
 }
 
-export class UserDto {
-
-    @IsEmail()
-    email: string;
-
-    @IsString()
-    password: string;
-}
