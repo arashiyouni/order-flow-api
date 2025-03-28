@@ -5,9 +5,6 @@ import * as bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
-    await prisma.$connect();
-    Logger.debug('🔌 | Connection in Prisma ✅');
-
     const hashedPassword = await bcrypt.hash('admin123', 10)
     const user = await prisma.user.create({
         data: {
@@ -16,6 +13,22 @@ async function main() {
             password: hashedPassword,
             role: 'ADMIN',
         },
+    });
+
+    const state = await prisma.state.createMany({
+        data: [
+            { name: 'Ahuachapán' },
+            { name: 'Santa Ana' },
+            { name: 'San Salvador' },
+        ]
+    });
+
+    const city = await prisma.city.createMany({
+        data: [
+            { name: 'Apaneca' },
+            { name: 'Metapán' },
+            { name: 'Antiguo Cuscatlán' },
+        ],
     });
 
 }
