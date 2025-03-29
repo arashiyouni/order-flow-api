@@ -1,34 +1,33 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Param } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
+import { RolesGuard } from '../auth/guard/roles.guard';
+import { AuthGuard } from '../auth/guard/auth.guard';
+import { httpResponse } from 'src/common/interface/https-commons.interface';
+import { OrderDto } from './dto/order.dto';
+import { Roles } from 'src/common/decorator/decorator';
+import { ROLE } from 'src/common/enum/global.enum';
 
+@UseGuards(AuthGuard, RolesGuard)
 @Controller('order')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(private readonly orderService: OrderService) { }
+
+  @Roles(ROLE.USER)
+  @Get(':orderId')
+  async GetOrder(@Param() orderId: OrderDto) {
+    const fn = async () => {
+      return await this.orderService.deleteOrder(orderId)
+    }
+    return await httpResponse(fn)
+  }
 
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.orderService.create(createOrderDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.orderService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.orderService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.orderService.update(+id, updateOrderDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.orderService.remove(+id);
+  @Roles(ROLE.USER)
+  async createOrder(@Body() createOrderDto: CreateOrderDto) {
+    const fn = async () => {
+      return this.orderService.create(createOrderDto)
+    }
+    return await httpResponse(fn)
   }
 }
