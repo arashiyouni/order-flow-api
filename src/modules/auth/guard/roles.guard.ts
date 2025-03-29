@@ -1,14 +1,13 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { Observable } from 'rxjs';
 import { AuthService } from '../auth.service';
 import { ConfigService } from '@nestjs/config';
 import { ROLE } from 'src/common/enum/global.enum';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  
+
   constructor(
     private jwtService: JwtService,
     private reflector: Reflector,
@@ -24,17 +23,20 @@ export class RolesGuard implements CanActivate {
     }
     const request = context.switchToHttp().getRequest();
     const token = this.authService.extractTokenFromHeader(request);
+
+    if (!token) {
+      throw new ForbiddenException('No se proporcionó token');
+    }
     const payload = this.jwtService.verify(token, {
       secret: this.configService.get<string>('jwt'),
     });
 
-    if (!request.user) {
-      throw new ForbiddenException('No se ha autenticado el usuario');
-    }
+    request.user = payload;
 
-    if (payload.isAdmin) return true;
+    const hasRole = payload.roles?.some((role: string) =>
+      requiredRoles.includes(role as ROLE),
+    );
 
-    const hasRole = payload.roles.some((role: string) => requiredRoles.includes(role as ROLE));
     if (!hasRole) {
       throw new ForbiddenException('No tiene permisos para acceder a este recurso');
     }
@@ -42,3 +44,4 @@ export class RolesGuard implements CanActivate {
     return true;
   }
 }
+
