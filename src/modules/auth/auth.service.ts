@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt';
@@ -17,6 +17,9 @@ export class AuthService {
     const { email, password } = userData
 
     const user = await this.authRepository.findEmail(email)
+
+    if (!user) throw new NotFoundException('No se ha encontrado usuario')
+
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) throw new UnauthorizedException()

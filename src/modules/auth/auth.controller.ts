@@ -16,6 +16,10 @@ export class AuthController {
     description: 'Login exitoso',
     type: LoginResponseDto,
   })
+  @ApiResponse({
+    status: 404,
+    description: 'No se ha encontrado usuario'
+  })
   @Post('login')
   async create(@Body() userDTO: UserDto) {
     const fn = async () => {
