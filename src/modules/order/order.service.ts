@@ -12,7 +12,7 @@ export class OrderService {
 
     if (!order) throw new BadRequestException('Ha ocurrido un error al guardar la orden')
 
-    const getOrdersId = order.OrderPerUser.map((ids) => ids.orderId)
+    const getOrdersId = order.OrderPerUser.map((ids) => ids.id)
 
     return {
       scheduleDeliveryDate: order.scheduleDeliveryDate,
