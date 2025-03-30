@@ -1,3 +1,4 @@
+import { ApiProperty } from "@nestjs/swagger"
 import { IsEmail, IsMongoId, IsString } from "class-validator"
 
 export class InformationUserResponse {
@@ -19,6 +20,10 @@ export class SearchUserResponse extends InformationUserResponse {
 }
 
 export class UserResponse {
+    @ApiProperty({
+        description: 'Nombre de usuario creado exitosamente',
+        example: 'angie',
+    })
     @IsString()
-    username: string
+    username: string;
 }

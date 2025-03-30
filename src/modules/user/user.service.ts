@@ -13,7 +13,7 @@ export class UserService {
 
     const user = await this.userRepository.findUser(email)
 
-    if (user) throw new BadRequestException(`El usuario ya tiene un correo registrado`)
+    if (!user) throw new BadRequestException(`El usuario ya tiene un correo registrado`)
 
     const hasPass = await bcrypt.hash(password, 10)
 
