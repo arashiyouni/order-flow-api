@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { InformationUserResponse, SearchUserResponse, UserResponse } from './dto/response/user-response.dto';
@@ -13,7 +13,7 @@ export class UserService {
 
     const user = await this.userRepository.findUser(email)
 
-    if (!user) throw new BadRequestException(`El usuario ya tiene un correo registrado`)
+    if (user) throw new BadRequestException(`El usuario ya tiene un correo registrado`)
 
     const hasPass = await bcrypt.hash(password, 10)
 
@@ -44,6 +44,18 @@ export class UserService {
       email: user.email,
       username: user.username,
       role: user.role
+    }
+  }
+
+  async findAllCities() {
+    const city = await this.userRepository.findCity()
+    const state = await this.userRepository.findState()
+
+    if (!city && !state) throw new NotFoundException('No se han encontrado departamentos y municipios')
+
+    return {
+      city: city,
+      state: state
     }
   }
 }

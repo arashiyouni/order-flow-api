@@ -22,6 +22,15 @@ export class RepositoryService {
         })
     }
 
+
+    async findState() {
+        return await this.prisma.state.findMany()
+    }
+
+    async findCity() {
+        return await this.prisma.city.findMany()
+    }
+
     async createUser(user: CreateUserDto, pass: string) {
         return await this.prisma.user.create({
             data: {
