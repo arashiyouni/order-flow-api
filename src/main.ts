@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 
 const logger = new Logger('📦 API BoxFul');
 
@@ -11,6 +11,15 @@ async function bootstrap() {
 
   const apiPrefix = configService.get<string>('apiPrefix');
   const port = configService.get<number>('port');
+
+  app.enableCors();
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, 
+      forbidNonWhitelisted: true, 
+      transform: true,
+    })
+  )
 
   if (apiPrefix) {
     app.setGlobalPrefix(apiPrefix);
