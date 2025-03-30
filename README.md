@@ -36,8 +36,15 @@ DATABASE_URL="mongodb://root:prisma@localhost:27017/prisma-mongo?authSource=admi
 npm run start:dev
 ```
 
-### 📄🏃‍♀️ Ver documentación de endpoints
+### 📄 Ver documentación de endpoints
 
 ```bash
 http://localhost:3003/api-docs
 ```
+
+### 👀 Endpoints en Postman
+
+[postman-collection.zip](https://github.com/user-attachments/files/19526854/postman-collection.zip)
+
+
+
