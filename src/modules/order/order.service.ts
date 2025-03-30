@@ -1,8 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateOrderDto, CreateOrderResponse } from './dto/create-order.dto';
+import { CreateOrderDto, CreateOrderPerUserDto, CreateOrderResponse } from './dto/create-order.dto';
 import { OrderRepositoryService } from './repository/order-repository.service';
-import { OrderDto } from './dto/order.dto';
-
 @Injectable()
 export class OrderService {
 
@@ -23,13 +21,13 @@ export class OrderService {
     }
   }
 
-  async deleteOrder(order: OrderDto) {
+  async deleteOrder(order: string) {
 
-    const isExistOrder = await this.orderRepository.findOrder(order.orderId)
+    const isExistOrder = await this.orderRepository.findOrder(order)
 
     if (!isExistOrder) throw new NotFoundException('No se ha encontrado la orden')
 
-    const deleteOrder = await this.orderRepository.deleteOrder(order.orderId)
+    const deleteOrder = await this.orderRepository.deleteOrder(order)
 
     if (!deleteOrder) throw new BadRequestException('Ha ocurrido un error al eliminar la orden')
 
@@ -40,5 +38,16 @@ export class OrderService {
     }
   }
 
+  async editOrder(orderId: string, order: CreateOrderPerUserDto) {
+    const isExistOrder = await this.orderRepository.findOrder(orderId)
+
+    if (!isExistOrder) throw new NotFoundException('No se ha encontrado la orden')
+
+    const updateOrder = await this.orderRepository.updateOrder(orderId, order)
+
+    if (!updateOrder) throw new BadRequestException('No se ha actualizado el detalle de la orden')
+
+    return updateOrder
+  }
 
 }

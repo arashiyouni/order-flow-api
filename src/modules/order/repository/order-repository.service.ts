@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateOrderDto } from '../dto/create-order.dto';
+import { CreateOrderDto, CreateOrderPerUserDto } from '../dto/create-order.dto';
 
 @Injectable()
 export class OrderRepositoryService {
@@ -36,8 +36,24 @@ export class OrderRepositoryService {
     }
 
     async deleteOrder(id: string) {
-        return await this.prisma.orderPerUser.findUnique({
+        return await this.prisma.orderPerUser.delete({
             where: { id: id }
+        })
+    }
+
+
+    async updateOrder(id: string, order: CreateOrderPerUserDto) {
+        return await this.prisma.orderPerUser.update({
+            where: {
+                id: id
+            },
+            data: {
+                weight: order.weight,
+                length: order.length,
+                height: order.height,
+                width: order.width,
+                description: order.description
+            },
         })
     }
 }

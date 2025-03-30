@@ -3,7 +3,7 @@ import { IsMongoId, IsString } from "class-validator";
 export class OrderDto {
 
     @IsMongoId()
-    orderId: string
+    id: string
 }
 
 export class OrderResponse {
