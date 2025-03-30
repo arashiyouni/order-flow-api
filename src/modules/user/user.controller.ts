@@ -1,10 +1,14 @@
-import { Controller, Post, Body, BadRequestException, Get } from '@nestjs/common';
+import { Controller, Post, Body, BadRequestException, Get, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { httpResponse } from 'src/common/interface/https-commons.interface';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserResponse } from './dto/response/user-response.dto';
 import { LocationResponse } from './dto/response/location-response.dto';
+import { Roles } from 'src/common/decorator/decorator';
+import { ROLE } from 'src/common/enum/global.enum';
+import { RolesGuard } from '../auth/guard/roles.guard';
+import { AuthGuard } from '../auth/guard/auth.guard';
 
 @ApiTags('user')
 @Controller('user')
@@ -41,6 +45,8 @@ export class UserController {
     description: 'No se encontraron departamentos ni municipios',
   })
 
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(ROLE.USER)
   @Get()
   async getCities() {
     const fn = async () => {
@@ -49,4 +55,13 @@ export class UserController {
     return await httpResponse(fn);
   }
 
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(ROLE.ADMIN)
+  @Get('all-user')
+  async getAllOrder() {
+    const fn = async () => {
+      return await this.userService.findAllOrder()
+    }
+    return await httpResponse(fn);
+  }
 }

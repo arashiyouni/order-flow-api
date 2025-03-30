@@ -15,8 +15,6 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 export class OrderController {
   constructor(private readonly orderService: OrderService) { }
 
-
-  @Roles(ROLE.USER)
   @ApiOperation({ summary: 'Eliminar una orden por su ID' })
   @ApiResponse({
     status: 200,
@@ -38,6 +36,7 @@ export class OrderController {
     description: 'No se ha actualizado el detalle de la orden',
   })
   @Delete(':id')
+  @Roles(ROLE.USER)
   async GetOrder(@Param() orderId: OrderDto) {
     const fn = async () => {
       return await this.orderService.deleteOrder(orderId.id)

@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { InformationUserResponse, SearchUserResponse, UserResponse } from './dto/response/user-response.dto';
 import { RepositoryService } from './repository/repository.service';
 
+
 @Injectable()
 export class UserService {
   constructor(private userRepository: RepositoryService) { }
@@ -57,5 +58,9 @@ export class UserService {
       city: city,
       state: state
     }
+  }
+
+  async findAllOrder() {
+    return await this.userRepository.findAllOrder()
   }
 }

@@ -1,6 +1,5 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt';
 import { Request } from 'express';
 import { UserDto } from './dto/create-auth.dto';
@@ -22,7 +21,7 @@ export class AuthService {
 
     const isMatch = await bcrypt.compare(password, user.password);
 
-    if (!isMatch) throw new UnauthorizedException()
+    if (!isMatch) throw new BadRequestException('Error en contraseña o email')
 
     const payload = { email: user.email, sub: user.id, username: user.username, roles: [user.role] }
 

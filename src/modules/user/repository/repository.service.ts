@@ -22,6 +22,22 @@ export class RepositoryService {
         })
     }
 
+    async findAllOrder() {
+        return this.prisma.order.findMany({
+            select: {
+                name: true,
+                lastname: true,
+                state: true,
+                phone: true,
+                OrderPerUser: {
+                    select: {
+                        description: true,
+                    },
+                },
+            },
+        });
+
+    }
 
     async findState() {
         return await this.prisma.state.findMany()
