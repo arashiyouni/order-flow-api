@@ -1,10 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsEmail, IsMongoId, IsNumber, IsPhoneNumber, IsString } from "class-validator";
+import { Type } from "class-transformer";
+import { IsArray, IsDate, IsEmail, IsMongoId, IsNumber, IsPhoneNumber, IsString, ValidateNested } from "class-validator";
 
 export class CreateOrderDto {
 
     @ApiProperty({ example: '2025-04-01T14:00:00.000Z' })
     @IsDate()
+    @Type(() => Date)
     scheduleDeliveryDate: Date;
 
     @ApiProperty({ example: 'Juan' })
@@ -19,8 +21,8 @@ export class CreateOrderDto {
     @IsEmail()
     email: string;
 
-    @ApiProperty({ example: '+521234567890' })
-    @IsPhoneNumber()
+    @IsPhoneNumber('SV')
+    @ApiProperty({ example: '+50370123456' })
     phone: string;
 
     @ApiProperty({ example: 'Calle Falsa 123' })
@@ -42,6 +44,9 @@ export class CreateOrderDto {
     @ApiProperty({
         description: 'Lista de paquetes de la orden',
     })
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => CreateOrderPerUserDto)
     OrderPerUser: CreateOrderPerUserDto[]
 }
 
