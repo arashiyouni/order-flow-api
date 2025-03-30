@@ -1,4 +1,3 @@
-import { Logger } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
@@ -31,6 +30,41 @@ async function main() {
         ],
     });
 
+    const newOrder = await prisma.order.create({
+        data: {
+            scheduleDeliveryDate: new Date('2025-04-01T14:00:00.000Z'),
+            name: 'Angie',
+            lastname: 'Espinoza',
+            email: 'angie@example.com',
+            phone: '+53123456789',
+            deliveryAddress: 'Av. Reforma 123',
+            state: 'San Salvador',
+            city: 'San Salvador',
+            instructions: 'Llamar al llegar',
+
+            OrderPerUser: {
+                create: [
+                    {
+                        weight: 10,
+                        length: 40,
+                        height: 20,
+                        width: 30,
+                        description: 'Caja con libros',
+                    },
+                    {
+                        weight: 7.5,
+                        length: 35,
+                        height: 25,
+                        width: 20,
+                        description: 'Maleta con ropa',
+                    },
+                ],
+            },
+        },
+        include: {
+            OrderPerUser: true,
+        },
+    });
 }
 
 main()
