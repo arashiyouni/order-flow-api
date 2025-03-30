@@ -1,4 +1,4 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
@@ -15,7 +15,7 @@ import { AuthRepositoryService } from './repository/authrepository.service';
     JwtModule.register({
       global: true,
       secret: process.env.MY_SECRET,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '160m' },
     })
   ],
   controllers: [AuthController],
